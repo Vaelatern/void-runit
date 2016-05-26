@@ -35,6 +35,40 @@ detect_virt() {
    fi
 }
 
+zfs_cachefile() {
+   local cache=/etc/zfs/zpool.cache
+   if [ -f /etc/default/zfs ]; then
+      . /etc/default/zfs
+      : ${ZPOOL_CACHE:=/etc/zfs/zpool.cache}
+      cache=$ZPOOL_CACHE
+   fi
+   printf "$cache"
+}
+
+zfs_mount() {
+   if [ -f /etc/default/zfs ]; then                                             
+      . /etc/default/zfs                                                        
+      case $ZFS_MOUNT in
+         yes|on|true|1)
+	     msg "Mounting ZFS file systems..."
+	     zfs mount -a
+             ;;
+      esac
+   fi
+}
+
+zfs_share() {
+   if [ -f /etc/default/zfs ]; then                                             
+      . /etc/default/zfs                                                        
+      case $ZFS_SHARE in
+         yes|on|true|1)
+	     msg "Sharing ZFS file systems..."
+	     zfs share -a
+             ;;
+      esac
+   fi
+}
+
 deactivate_vgs() {
    _group=${1:-All}
    if [ -x /sbin/vgchange -o -x /bin/vgchange ]; then

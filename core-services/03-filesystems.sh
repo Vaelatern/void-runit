@@ -30,15 +30,13 @@ if [ -e /etc/crypttab ]; then
     fi
 fi
 
-if [ -e /etc/zfs/zpool.cache -a -x /usr/bin/zfs ]; then
+if [ -e "$(zfs_cachefile)" -a -x /usr/bin/zfs ]; then
     msg "Activating ZFS devices..."
     zpool import -c /etc/zfs/zpool.cache -N -a
 
-    msg "Mounting ZFS file systems..."
-    zfs mount -a
+    zfs_mount
 
-    msg "Sharing ZFS file systems..."
-    zfs share -a
+    zfs_share
 
     # NOTE(dh): ZFS has ZVOLs, block devices on top of storage pools.
     # In theory, it would be possible to use these as devices in
